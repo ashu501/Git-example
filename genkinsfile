@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ashu501/Git-example.git'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    mkdir -p deployed_html
+                    cp form.html deployed_html/
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            publishHTML(target: [
+                allowMissing: false,
+                keepAll: true,
+                reportDir: 'deployed_html',
+                reportFiles: 'form.html',
+                reportName: 'My Webpage'
+            ])
+        }
+    }
+}
